@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+L_OPTION="-l 40"
+while getopts 'l:' OPTION
+do
+  case $OPTION in
+  l) L_OPTION="-l ${OPTARG}" ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 [ $# == 3 ] || { echo "$0 <fastq_1> <fastq_2> <out_dir>"; exit 1; }
 [ -f ${1} ] || { echo ${1} not found; exit 1; }
 [ -f ${2} ] || { echo ${2} not found; exit 1; }
@@ -28,7 +37,7 @@ then
 fi 
 
 REF_FASTA=/home/share/db/ucsc.hg19.fasta
-BED=/home/ryota/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed
+BED=/home/ryota/hd/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
@@ -45,10 +54,12 @@ echo
 UNMAPPED_FQ_1=${OUT_DIR}/$(basename ${FASTQ_1%fq}unmapped.fq)
 UNMAPPED_FQ_2=${OUT_DIR}/$(basename ${FASTQ_2%fq}unmapped.fq)
 COMMAND=(${SCRIPT_DIR}/clip.sh
+         ${L_OPTION}
          ${UNMAPPED_FQ_1}
          ${OUT_DIR})
 ${COMMAND[@]} || exit 1
 COMMAND=(${SCRIPT_DIR}/clip.sh
+         ${L_OPTION}
          ${UNMAPPED_FQ_2}
          ${OUT_DIR})
 ${COMMAND[@]} || exit 1

@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+L_OPTION="-l 40"
+while getopts 'l:' OPTION
+do
+  case $OPTION in
+  l) L_OPTION="-l ${OPTARG}" ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 [ $# == 2 ] || { echo "$0 <fastq> <out_dir>"; exit 1; }
 [ -f ${1} ] || { echo ${1} not found; exit 1; }
 [ -d ${2} ] || { echo ${2} not found; exit 1; }
@@ -23,7 +32,7 @@ do
   COMMAND=(fastx_clipper -a ${seq}
                          -Q 33
                          -c -n -v
-                         -l 40
+                         ${L_OPTION}
                          -M 30
                          -i ${FASTQ})
   ${COMMAND[@]} >> ${OUT_FASTQ} || exit 1
