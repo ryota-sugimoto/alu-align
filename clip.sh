@@ -23,7 +23,7 @@ do
   COMMAND=(fastx_clipper -a ${seq}
                          -Q 33
                          -c -n -v
-                         -l 50
+                         -l 40
                          -M 30
                          -i ${FASTQ})
   ${COMMAND[@]} >> ${OUT_FASTQ} || exit 1
