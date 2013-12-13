@@ -82,5 +82,12 @@ COMMAND=(${SCRIPT_DIR}/coverage.sh
          ${OUT_DIR})
 ${COMMAND[@]} || exit 1
 
+#pileup
+PILEUP=${BAM%bam}pileup
+COMMAND=(samtools mpileup 
+         -f ${REF_FASTA}
+         ${BAM})
+${COMMAND[@]} | awk '$4 > 0{print}' > ${PILEUP} || exit 1
+
 [[ ${REMOVE_FASTQ_1} ]] && rm ${FASTQ_1}
 [[ ${REMOVE_FASTQ_2} ]] && rm ${FASTQ_2}
