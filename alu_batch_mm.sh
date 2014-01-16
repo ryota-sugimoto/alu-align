@@ -25,7 +25,7 @@ OUT_DIR=$(cd ${3}; pwd)
 
 if [[ ${FASTQ_2} == *.gz ]]
 then
-  gunzip -c ${FASTQ_1} > ${OUT_DIR}/$(basename ${FASTQ_1%.gz})
+  gunzip -c ${FASTQ_2} > ${OUT_DIR}/$(basename ${FASTQ_1%.gz})
   FASTQ_1=${OUT_DIR}/$(basename ${FASTQ_1%.gz})
   REMOVE_FASTQ_1=t
 fi 
@@ -41,28 +41,19 @@ BED=/home/ryota/hd/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
-#collect unmapped reads
-COMMAND=(${SCRIPT_DIR}/collect_unmapped_read.sh 
-         ${FASTQ_1}
-         ${FASTQ_2}
-         ${REF_FASTA}
-         ${OUT_DIR})
-${COMMAND[@]} || exit 2
-echo
-
 #clip reads
-UNMAPPED_FQ_1=${OUT_DIR}/$(basename ${FASTQ_1%fq}unmapped.fq)
-UNMAPPED_FQ_2=${OUT_DIR}/$(basename ${FASTQ_2%fq}unmapped.fq)
+UNMAPPED_FQ_1=${FASTQ_1}
+UNMAPPED_FQ_2=${FASTQ_2}
 COMMAND=(${SCRIPT_DIR}/clip.sh
          ${L_OPTION}
          ${UNMAPPED_FQ_1}
          ${OUT_DIR})
-${COMMAND[@]} || exit 3
+${COMMAND[@]} || exit 1
 COMMAND=(${SCRIPT_DIR}/clip.sh
          ${L_OPTION}
          ${UNMAPPED_FQ_2}
          ${OUT_DIR})
-${COMMAND[@]} || exit 4
+${COMMAND[@]} || exit 1
 
 #align
 CLIPPED_FQ_1=${UNMAPPED_FQ_1%fq}clipped.fq
@@ -72,7 +63,7 @@ COMMAND=(${SCRIPT_DIR}/align.sh
          ${CLIPPED_FQ_2}
          ${REF_FASTA}
          ${OUT_DIR})
-${COMMAND[@]} || exit 5
+${COMMAND[@]} || exit 1
 
 #coverage
 BAM=${CLIPPED_FQ_1%fq}bam
@@ -80,21 +71,14 @@ COMMAND=(${SCRIPT_DIR}/coverage.sh
          ${BAM}
          ${BED}
          ${OUT_DIR})
-${COMMAND[@]} || exit 6
+${COMMAND[@]} || exit 1
 
 #pileup
 PILEUP=${BAM%bam}pileup
 COMMAND=(samtools mpileup 
          -f ${REF_FASTA}
          ${BAM})
-${COMMAND[@]} | awk '$4 > 0{print}' > ${PILEUP} || exit 7
+${COMMAND[@]} | awk '$4 > 0{print}' > ${PILEUP} || exit 1
 
-echo removing files
-if [[ ${REMOVE_FASTQ_1} ]]
-then 
-  rm ${FASTQ_1}
-fi
-if [[ ${REMOVE_FASTQ_2} ]]
-then
-  rm ${FASTQ_2}
-fi
+[[ ${REMOVE_FASTQ_1} ]] && rm ${FASTQ_1}
+[[ ${REMOVE_FASTQ_2} ]] && rm ${FASTQ_2}
