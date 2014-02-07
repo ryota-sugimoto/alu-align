@@ -23,7 +23,7 @@ FASTQ_1=$(file_abs_path ${1})
 FASTQ_2=$(file_abs_path ${2})
 OUT_DIR=$(cd ${3}; pwd)
 
-if [[ ${FASTQ_2} == *.gz ]]
+if [[ ${FASTQ_1} == *.gz ]]
 then
   gunzip -c ${FASTQ_1} > ${OUT_DIR}/$(basename ${FASTQ_1%.gz})
   FASTQ_1=${OUT_DIR}/$(basename ${FASTQ_1%.gz})
