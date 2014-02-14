@@ -27,6 +27,12 @@ BEGIN{ OFS="\t"; }
     seq=substr(seq,f_clip_l);
     score=substr(score,f_clip_l); }
   gsub(/\./,"N",seq); 
-  if (seq) { print $1,seq,$3,score } }'
+  if (seq) { 
+    print $1,seq,$3,score 
+  }
+  else {
+    gsub(/\./,"N",$2);
+    print $1,$2,$3,$4
+  } }'
 
 awk "${awk_script_1}" ${1} | awk "${awk_script_2}" | tr "\t" "\n" 
