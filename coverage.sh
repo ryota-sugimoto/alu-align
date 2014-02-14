@@ -19,3 +19,11 @@ COMMAND2=(coverageBed -a ${BED}
                       -b stdin)
 ${COMMAND1[@]} | ${COMMAND2[@]} > ${COVERAGE} || exit 1
 awk '$7 == 0 {print}' ${COVERAGE} > ${COVERAGE%bed}0cover.bed
+
+COMMAND1=(sortBed -i ${COVERAGE%bed}0cover.bed)
+COMMAND2=(bedtools cluster)
+${COMMAND1[@]} | ${COMMAND2[@]} > ${COVERAGE%bed}0cover.cluster.bed
+
+COMMAND1=(closestBed -a ${COVERAGE%bed}0cover.bed
+                     -b ${BED})
+${COMMAND1[@]} > ${COVERAGE%bed}0cover.closest.bed

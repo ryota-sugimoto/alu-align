@@ -51,8 +51,8 @@ ${COMMAND[@]} || exit 2
 echo
 
 #clip reads
-UNMAPPED_FQ_1=${OUT_DIR}/$(basename ${FASTQ_1%fq}unmapped.fq)
-UNMAPPED_FQ_2=${OUT_DIR}/$(basename ${FASTQ_2%fq}unmapped.fq)
+UNMAPPED_FQ_1=${OUT_DIR}/$(basename ${FASTQ_1%.fq}.unmapped.fq)
+UNMAPPED_FQ_2=${OUT_DIR}/$(basename ${FASTQ_2%.fq}.unmapped.fq)
 COMMAND=(${SCRIPT_DIR}/clip.sh
          ${L_OPTION}
          ${UNMAPPED_FQ_1}
