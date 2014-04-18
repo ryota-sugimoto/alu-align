@@ -42,22 +42,20 @@ BED=/home/ryota/hd/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 #clip reads
-UNMAPPED_FQ_1=${FASTQ_1}
-UNMAPPED_FQ_2=${FASTQ_2}
 COMMAND=(${SCRIPT_DIR}/clip.sh
          ${L_OPTION}
-         ${UNMAPPED_FQ_1}
+         ${FASTQ_1}
          ${OUT_DIR})
 ${COMMAND[@]} || exit 1
 COMMAND=(${SCRIPT_DIR}/clip.sh
          ${L_OPTION}
-         ${UNMAPPED_FQ_2}
+         ${FASTQ_2}
          ${OUT_DIR})
 ${COMMAND[@]} || exit 1
 
 #align
-CLIPPED_FQ_1=${UNMAPPED_FQ_1%fq}clipped.fq
-CLIPPED_FQ_2=${UNMAPPED_FQ_2%fq}clipped.fq
+CLIPPED_FQ_1=${OUT_DIR}/$(basename ${FASTQ_1%fq}clipped.fq)
+CLIPPED_FQ_2=${OUT_DIR}/$(basename ${FASTQ_2%fq}clipped.fq)
 COMMAND=(${SCRIPT_DIR}/align.sh
          ${CLIPPED_FQ_1}
          ${CLIPPED_FQ_2}
