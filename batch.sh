@@ -58,7 +58,16 @@ ${command_1[@]} ${sai_1} ${fastq_1} > ${sam_1}
 ${command_2[@]} ${sam_1} > ${unmapped_fastq_1} || exit 1; echo
 ${command_1[@]} ${sai_2} ${fastq_2} >${sam_2}
 ${command_2[@]} ${sam_2} > ${unmapped_fastq_2} || exit 1; echo
- 
+
+bam=${sam_1%sam}bam
+merge_command=(java -jar ${conf["merge_sam_jar"]}
+               INPUT=${sam_1}
+               INPUT=${sam_2}
+               OUTPUT=${bam}
+               SORT_ORDER=coordinate
+               VALIDATION_STRINGENCY=LENIENT)
+${merge_command[@]} || exit 1; echo
+
 rm ${sai_1} ${sai_2}
 
 #clip reads
