@@ -41,8 +41,10 @@ out_dir=$(cd ${3}; pwd)
 #collect unmapped reads
 sai_1=${out_dir}/$(basename ${fastq_1} \
                    | sed -E 's/(fastq|fq)(\.(gz|gzip))?$//')sai
+sam_1=${sai_1%sai}sam
 sai_2=${out_dir}/$(basename ${fastq_2} \
                    | sed -E 's/(fastq|fq)(\.(gz|gzip))?$//')sai
+sam_2=${sai_2%sai}sam
 command=(bwa aln -t ${conf["bwa_t_opt"]} 
                  ${conf["reference_fasta"]})
 ${command[@]} ${fastq_1} > ${sai_1} || exit 1; echo
@@ -52,10 +54,10 @@ unmapped_fastq_1=${sai_1%sai}unmapped.fq
 unmapped_fastq_2=${sai_2%sai}unmapped.fq
 command_1=(bwa samse ${conf["reference_fasta"]})
 command_2=(gawk '$0!~/^@/&&and(4,$2){printf"@%s\n%s\n+\n%s\n",$1,$10,$11}')
-${command_1[@]} ${sai_1} ${fastq_1} \
-  | ${command_2[@]} > ${unmapped_fastq_1} || exit 1; echo
-${command_1[@]} ${sai_2} ${fastq_2} \
-  | ${command_2[@]} > ${unmapped_fastq_2} || exit 1; echo
+${command_1[@]} ${sai_1} ${fastq_1} > ${sam_1}
+${command_2[@]} ${sam_1} > ${unmapped_fastq_1} || exit 1; echo
+${command_1[@]} ${sai_2} ${fastq_2} >${sam_2}
+${command_2[@]} ${sam_2} > ${unmapped_fastq_2} || exit 1; echo
  
 rm ${sai_1} ${sai_2}
 
