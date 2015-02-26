@@ -21,7 +21,7 @@ conf=( ["bwa_t_opt"]=4
        ["fastx_clipper_l_opt"]=40
        ["merge_sam_jar"]="/usr/local/share/java/MergeSamFiles.jar"
        ["bed"]="~/hd/some_task/yamada/cowden_alu/samples/RefSeqGene_total_hg19.bed"
-       ["repeat_mask_bed"]="/home/ryota/hd/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed" )
+       ["repeat_mask_bed"]="/home/ryota/hd/some_task/yamada/cowden_alu/samples/hgRepMaskTables.bed")
 
 while read key value
 do 
