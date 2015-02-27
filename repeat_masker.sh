@@ -14,5 +14,6 @@ fastq=$(file_abs_path ${2})
 
 repeat_masker=""
 
-$(dirname ${0})/bed_fastq_filter.py ${bed} ${fastq} \
-  | ${repeat_masker} /dev/stdin || exit 1
+fasta=${fastq}fa
+$(dirname ${0})/bed_fastq_filter.py ${bed} ${fastq} > ${fasta} || exit 1
+${repeat_masker} ${fasta} || exit 1
