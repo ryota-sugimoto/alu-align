@@ -5,14 +5,13 @@ import sys
 def read_id(bed):
   return set(s.split()[3] for s in bed)
 
-def read_fastq(fastq):
-  d = {}
+def read_fastq(fastq, ids):
   for s in fastq:
     id = s.strip().split()[0][1:]
-    d[id] = fastq.next().strip()
-    fastq.next()
-    fastq.next()
-  return d
+    if id in ids:
+      yield (id, fastq.next().strip())
+      fastq.next()
+      fastq.next()
 
 def insert_newline(s,n):
   res = []
@@ -36,7 +35,6 @@ if __name__ == "__main__":
     file_opener = gzip.open
   else:
     file_opener = open
-  reads = read_fastq(file_opener(args.fastq))
 
-  for id in ids:
-    print ">%s\n%s" % (id, insert_newline(reads[id],50))
+  for id,read in read_fastq(file_opener(args.fastq), ids):
+    print ">%s\n%s" % (id, insert_newline(read,50))
