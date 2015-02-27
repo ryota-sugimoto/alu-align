@@ -6,8 +6,9 @@ def read_id(bed):
   return set(s.split()[3] for s in bed)
 
 def read_fastq(fastq, ids):
+  length = len(iter(ids).next())
   for s in fastq:
-    id = s.strip().split()[0][1:]
+    id = s.strip().split()[0][1:][:length]
     if id in ids:
       yield (id, fastq.next().strip())
       fastq.next()
