@@ -8,11 +8,12 @@ def read_id(bed):
 def read_fastq(fastq, ids):
   length = len(iter(ids).next())
   for s in fastq:
-    id = s.strip().split()[0][1:][:length]
+    id = s.strip().split()[0][1:].split("/")[0]
+    seq = fastq.next().strip()
+    fastq.next()
+    fastq.next()
     if id in ids:
-      yield (id, fastq.next().strip())
-      fastq.next()
-      fastq.next()
+      yield (id, seq)
 
 def insert_newline(s,n):
   res = []
